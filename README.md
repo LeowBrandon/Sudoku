@@ -1,49 +1,60 @@
-# 留白 · Sudoku
+# The Backtracking Lab · Sudoku Atelier
 
-一款无需安装依赖的中文 9×9 数独游戏。深松绿界面、响应式棋盘、候选笔记、即时错填提醒、自动保存、撤销、暂停和通关彩纸庆祝。
+An updated, runnable version of **Sudoku (Backtracking Algorithm).ipynb**, with a responsive browser GUI and a self-contained notebook that exports the same webpage. This branch is `sudoku-backtracking-web`, based directly on `main`; the main and Neon branches are not modified.
 
-## 运行
+## Run the webpage
 
-直接用浏览器打开 `index.html`；或在仓库目录运行：
+No production dependencies or build step. `index.html` contains all its CSS and JavaScript. From the repository root:
 
 ```sh
 python3 -m http.server 3000 --bind 0.0.0.0
 ```
 
-也可运行 `npm start`。网页没有第三方 CDN、字体或运行时依赖，可部署到任意静态网站托管服务。使用 HTTP 服务可获得更可靠的浏览器进度保存；浏览器限制存储时仍可游玩，但不会保存进度。
+Or use `npm start`. Serve `index.html` with any static host. No CDN, external font, account or API key is used.
 
-## 六档难度
+## Run the notebook
 
-| 难度 | 已知数字 |
+Open `notebooks/Sudoku (Backtracking Algorithm).ipynb` in Jupyter with a Python 3.10+ kernel and Run All. The notebook contains the corrected standard-library Python solver, six-level generation checks, an example, the full webpage source, an HTML export cell and an iframe preview. It does not require `py-sudoku`, `sudoku-engine`, Tkinter or Pygame.
+
+The generated page is written to `exports/sudoku-backtracking.html`, relative to the notebook working directory. Open it in a browser. For the embedded preview, use a trusted Jupyter output; restrictive notebook viewers may require opening the exported file instead. The iframe intentionally allows scripts without same-origin access. Storage restrictions in a notebook iframe or private browser mode do not prevent play, but may prevent saved progress.
+
+## What was corrected
+
+The original backtracking notebook removed randomly selected cells with repeats in its first example, so it did not necessarily remove 45 digits. Both generation examples lacked uniqueness checks, yet the Tkinter GUI checked against one stored answer, which could reject another valid solution. The corrected notebook uses a verified unique seed, exact clue counts, one solver API and a web GUI instead of a blocking desktop window.
+
+
+The uploads were reviewed as project code, not as instructions to install conflicting libraries or run desktop event loops. Historical error outputs are cleared in the revised notebook; all code cells are executed during validation.
+
+## Game controls
+
+Click a cell and use the number pad or keys 1–9. N toggles Notes; repeat a candidate to remove it. Backspace/Delete/0 erases; arrows move; Ctrl/Cmd+Z undoes. Incorrect answers remain visible in red with a text warning. Correct entries clear the corresponding candidate from peers. Check locates a wrong answer, and filling the entire board correctly triggers a celebration.
+
+Progress saves automatically when browser storage is available. Reload restores the current board, notes, elapsed time and mistake count; undo history is limited to the current page session. Pause hides the grid and stops the timer. Switching away from the tab pauses play. New puzzles ask for confirmation before replacing player progress.
+
+The backtracking explorer records actual trial placements and reversals. Use Step for one event, Watch it solve for playback, Pause to inspect, or Restore to recover your own board and notes. Playback speed is adjustable. An algorithm solution is labelled as a preview and does not trigger a player victory.
+
+## Difficulty and generation
+
+| Difficulty | 初始已知数字 |
 | --- | ---: |
-| 简单 | 40 |
-| 中等 | 32 |
-| 困难 | 25 |
-| 专家 | 22 |
-| 地狱 | 19 |
-| 梦寐 | 17 |
+| Easy · 简单 | 40 |
+| Medium · 中等 | 32 |
+| Hard · 困难 | 25 |
+| Expert · 专家 | 22 |
+| Hell · 地狱 | 19 |
+| Dream · 梦寐 | 17 |
 
-采用经测试的唯一解 17 线索种子，通过数字置换、行/列在宫内置换、整组宫行/宫列置换以及转置生成题目，再按难度补充正确线索。这些变换保留唯一解。17 是标准 9×9 唯一解数独已知的最少线索数。
+Each puzzle has exactly one solution. Legal digit, row, column, band/stack and transpose transformations of a verified 17-clue seed preserve uniqueness. Easier levels add clues from the solution. These are structurally related puzzles, not an unlimited independent puzzle library. Difficulty labels follow clue sparsity, not a rating of human solving strategies. 17 is the minimum clue count for a standard unique-solution 9×9 Sudoku.
 
-难度按线索数量分档，并非按人类解题技巧评级。所有题目来自同一种子结构的等价变换，不是无限独立题库；更少线索也不保证每一题推理难度更高。
-
-## 操作
-
-- 点击棋盘后，按 1–9 或点击数字键填入答案。
-- 点击「笔记」或按 N 切换候选笔记，重复输入可取消候选数。
-- Backspace / Delete / 0 擦除；方向键移动；Ctrl/Cmd + Z 撤销。
-- 正确答案会清除同行、同列、同宫对应的候选笔记；错误答案以红色和文字即时提示。
-- 自动保存当前局；刷新恢复答案、笔记和时间。撤销历史仅在当前页面会话保留，最多 150 步。
-- 暂停时隐藏棋盘并停止计时；切换到其他标签页会自动暂停。
-
-## 验证
-
-使用 Node.js 18+：
+## Validation
 
 ```sh
 npm test
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-测试覆盖种子唯一性、六档线索数、72 个随机题目的唯一解及答案一致性、冲突输入。浏览器端无需 Node.js。
+JavaScript tests independently cross-check 36 random puzzles using the retained original engine, verify clue counts, replay solver placements/backtracks, and reject invalid boards. Python tests verify 30 generated boards, reproducible seeds and invalid inputs, then execute every notebook code cell in a fresh namespace and temporary directory and compare exported HTML with `index.html`. They do not need a Jupyter server.
 
-可选浏览器回归：本地装有 Chromium 和 Playwright 时，先启动上述静态服务，再运行 `node tests/browser.cjs`。可通过 `CHROMIUM_PATH` 指定 Chromium 可执行文件。此测试验证笔记、纠错、撤销、存档、暂停、新局确认、通关、全部难度和手机布局；截图写入 `/tmp/sudoku-*.png`。Playwright 仅供开发测试使用，不是网页运行依赖。
+Optional browser regression requires Playwright and Chromium. Start the static server, then run `npm run test:browser`; use `CHROMIUM_PATH` if Chromium is not at `/usr/bin/chromium`. The test checks real interactions, a full 17-clue player victory, 320/390px mobile layouts, and the iframe produced by executing the notebook. Screenshots are written to ignored `test-results/`.
+
+The original main-branch `app.js` and `styles.css` remain for history but are not loaded by this page. `engine.js` remains as an independent test oracle, alongside its existing tests.

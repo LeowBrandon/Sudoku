@@ -1,4 +1,7 @@
 node_modules/
 test-results/
 playwright-report/
+exports/
+__pycache__/
+.ipynb_checkpoints/
 .DS_Store
