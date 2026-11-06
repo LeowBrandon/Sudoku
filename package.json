@@ -1,0 +1,10 @@
+{
+  "name": "liubai-sudoku",
+  "version": "1.0.0",
+  "private": true,
+  "description": "留白：六档难度的静态 HTML 数独游戏",
+  "scripts": {
+    "test": "node --test tests/engine.test.js",
+    "start": "python3 -m http.server 3000 --bind 0.0.0.0"
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102a2a">
+  <meta name="description" content="留白数独：六档难度、候选笔记与即时纠错。在数字之间，找回专注。">
+  <title>留白 · Sudoku — 在数字之间，找回专注</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="engine.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="留白数独首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>留白<span class="brand-en">SUDOKU</span></span></a>
+    <span class="header-caption">A LITTLE SPACE FOR YOUR MIND</span>
+    <button class="quiet-button" id="help-button"><span aria-hidden="true">?</span> 玩法指南</button>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow"><span></span> THE ART OF FOCUS</p><h1>在数字之间，<em>找回专注。</em></h1><p class="intro-copy">把纷扰留在外面。此刻，只有你和九宫格。</p></div><div class="edition"><span>09 × 09</span><small>无限可能 · 唯一答案</small></div></section>
+    <section class="game-layout" aria-label="数独游戏">
+      <div class="play-column">
+        <div class="game-status"><div class="difficulty-status"><span class="status-dot"></span><strong id="current-level">简单</strong><span class="tag" id="clue-tag">40 个线索</span></div><div class="timer-group"><span class="clock-icon" aria-hidden="true">◷</span><span id="timer" aria-label="游戏用时">00:00</span><button id="pause-button" class="icon-button" aria-label="暂停游戏" title="暂停游戏">Ⅱ</button></div></div>
+        <div class="board-shell"><div id="board" class="board" role="grid" aria-label="9乘9数独棋盘"></div><div class="pause-cover" id="pause-cover" hidden><span class="pause-symbol">Ⅱ</span><h2>给思绪，一点留白</h2><p>棋盘已隐藏，计时已暂停。</p><button class="primary-button" id="resume-button">继续游戏 <span>→</span></button></div></div>
+        <div class="board-caption"><span><i class="legend given-legend"></i>题目数字 <i class="legend filled-legend"></i>你的答案</span><span id="filled-count">已完成 0 / 41</span></div>
+        <div class="mobile-tools-hint">轻触空格，再选择下方数字</div>
+        <div class="number-pad" id="number-pad" aria-label="数字键盘"></div>
+        <p class="keyboard-tip"><kbd>1–9</kbd> 填数 <span>·</span> <kbd>N</kbd> 笔记 <span>·</span> <kbd>⌫</kbd> 擦除 <span>·</span> 方向键移动</p>
+      </div>
+      <aside class="sidebar">
+        <section class="panel difficulty-panel"><p class="section-label">YOUR NEXT CHALLENGE</p><h2>选择你的节奏</h2><div id="difficulty-options" class="difficulty-options" role="group" aria-label="选择难度"></div><div class="level-description"><span id="level-symbol">✦</span><div><h3 id="level-label">轻松入门</h3><p id="level-description"></p></div></div><button id="new-game" class="primary-button">开启新的一局 <span aria-hidden="true">↗</span></button><p class="unique-note"><span aria-hidden="true">◇</span> 每一道题，都有唯一解</p></section>
+        <section class="panel tools-panel"><div class="panel-heading"><h2>解题工具</h2><span>MAKE IT YOURS</span></div><div class="tools"><button id="undo-button" class="tool-button"><span class="tool-icon" aria-hidden="true">↶</span><span>撤销</span></button><button id="erase-button" class="tool-button"><span class="tool-icon" aria-hidden="true">⌫</span><span>擦除</span></button><button id="notes-button" class="tool-button" aria-pressed="false"><span class="tool-icon" aria-hidden="true">✎</span><span>笔记 <b id="note-status">关</b></span></button></div><div class="note-explainer"><span class="tiny-grid" aria-hidden="true">¹ ²<br>⁴ ⁶</span><p>不确定的答案，先记下来。<br>开启笔记，在空格中标记候选数。</p></div><button class="check-button" id="check-button"><span aria-hidden="true">◎</span> 检查当前进度 <span>→</span></button></section>
+        <div class="mindful-note"><span aria-hidden="true">“</span><p>不必急着填满。<br>答案，藏在每一次耐心的观察里。</p><small>TAKE YOUR TIME. FIND YOUR FLOW.</small></div>
+      </aside>
+    </section>
+    <footer><span>留白 SUDOKU <i>／</i> 为专注而设计</span><span>六种难度，一份心流。</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="confirm-dialog" class="modal"><button class="modal-close" data-close aria-label="关闭">×</button><p class="section-label">A FRESH START</p><h2 id="confirm-title">开启新的挑战？</h2><p id="confirm-copy">当前这一局的进度将被替换。</p><div class="modal-actions"><button class="secondary-button" data-close>再想想</button><button class="primary-button" id="confirm-action">开启新局 →</button></div></dialog>
+  <dialog id="help-dialog" class="modal help-modal"><button class="modal-close" data-close aria-label="关闭">×</button><p class="section-label">HOW TO PLAY</p><h2>九宫格里的小宇宙</h2><p>将 1–9 填入空格，让每一行、每一列、每一个 3×3 宫中的数字都不重复。</p><div class="help-item"><b>01</b><p><strong>选格，再填数</strong>点击空格，使用数字键盘或键盘 1–9 输入。方向键可移动选格。</p></div><div class="help-item"><b>02</b><p><strong>给推理留个记号</strong>点击「笔记」或按 N，输入候选数。再次输入同一数字即可取消标记。关闭笔记后填入正式答案。</p></div><div class="help-item"><b>03</b><p><strong>每一步，都有回应</strong>错填会以红色和文字即时提醒；擦除或改正即可继续。填满且全部正确后，即可通关。</p></div><p class="help-footnote">难度按线索稀疏程度分档：40 / 32 / 25 / 22 / 19 / 17 个。线索更少通常更具挑战，实际推理难度因题而异。所有题目均由唯一解的 17 线索种子经过合法变换生成。</p><button class="primary-button" data-close>准备好了 →</button></dialog>
+  <dialog id="win-dialog" class="modal win-modal"><button class="modal-close" data-close aria-label="关闭">×</button><div class="win-emblem" aria-hidden="true">✧</div><p class="section-label">BEAUTIFULLY SOLVED</p><h2>每一格，皆是高光。</h2><p>你让所有数字找到了归属。<br>这份专注，值得一场庆祝。</p><div class="win-stats"><div><small>完成难度</small><strong id="win-level"></strong></div><div><small>专注时长</small><strong id="win-time"></strong></div><div><small>错填次数</small><strong id="win-mistakes"></strong></div></div><button class="primary-button" id="win-next">再赴一场挑战 <span>↗</span></button></dialog>
+  <div id="confetti" aria-hidden="true"></div>
+</body>
+</html>
