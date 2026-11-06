@@ -1,45 +1,257 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#102a2a">
-  <meta name="description" content="留白数独：六档难度、候选笔记与即时纠错。在数字之间，找回专注。">
-  <title>留白 · Sudoku — 在数字之间，找回专注</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="engine.js"></script>
-  <script defer src="app.js"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#39785e"><title>Your Daily Sudoku · Sudoku Atelier</title>
+<style>:root{--bg:#f4f3ed;--paper:#fffefa;--ink:#253831;--muted:#7b8781;--accent:#39785e;--soft:#e5eddf;--line:#dfe3d9;--rule:#83978b;font-family:Inter,"Segoe UI","PingFang SC",sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,var(--soft),transparent 55%);min-height:100vh}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;transition:background .15s,transform .15s}button:disabled{opacity:.4;cursor:default}button:hover:not(:disabled){filter:brightness(.96)}button:active:not(:disabled){transform:translateY(1px)}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}[hidden]{display:none!important}header{max-width:1240px;height:96px;padding:0 40px;margin:auto;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink);font-size:23px;font-weight:700;letter-spacing:-1px}.brand-light{font-weight:350;color:var(--muted);margin-left:-2px}.logo{font-size:37px;color:var(--accent);margin-right:5px}.header-label{font-size:9px;letter-spacing:2.5px;color:var(--muted)}.outline{background:transparent;border:1px solid #bdc8bf;color:var(--ink);border-radius:7px;font-size:11px;padding:10px 14px}.outline span{margin-left:14px}main{max-width:1080px;margin:auto;padding:0 36px}.hero{padding:42px 0 36px;display:flex;align-items:center;justify-content:space-between}.eyebrow{font-size:9px;letter-spacing:2px;font-weight:650;color:var(--muted);margin:0 0 15px}.hero .eyebrow{display:flex;align-items:center;gap:7px}.hero .eyebrow i{width:5px;height:5px;background:var(--accent);border-radius:50%}h1{font-size:42px;font-weight:450;letter-spacing:-1.6px;line-height:1.25;margin:0}h1 em{font-family:Georgia,serif;color:var(--accent);font-weight:400}.hero-copy{font-size:12px;line-height:1.8;color:var(--muted);margin:15px 0 0}.hero-number{font-family:Georgia,serif;font-size:72px;color:#a8b6a7;text-align:right;line-height:1}.hero-number span{display:block;font-family:Inter,sans-serif;font-size:7px;letter-spacing:1.6px;margin-top:15px;color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,574px) 296px;gap:48px;justify-content:space-between;align-items:start}.board-top{height:35px;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;font-size:11px}.board-top>div{display:flex;align-items:center;gap:8px}.board-top strong{font-weight:600}.live-dot{width:5px;height:5px;background:var(--accent);border-radius:50%}.chip{font-size:9px;border:1px solid var(--line);padding:4px 6px;border-radius:4px;color:var(--muted)}.timer{font-variant-numeric:tabular-nums}.timer>span:first-child{font-size:18px;color:var(--muted)}.pause-button{height:25px;width:25px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;font-size:10px}.board-wrap{padding:10px;background:var(--paper);border:1px solid #d7ded1;border-radius:12px;box-shadow:0 16px 45px #2538310b;position:relative}#board{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));aspect-ratio:1;border:2px solid var(--rule);border-radius:3px;overflow:hidden}.cell{aspect-ratio:1;position:relative;min-width:0;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper);color:var(--accent);font-size:clamp(19px,2.3vw,27px);font-weight:450;display:grid;place-items:center;padding:0;font-variant-numeric:tabular-nums;border-radius:0}.cell.given{color:#334a3f;font-weight:650}.cell:nth-child(3n){border-right:2px solid var(--rule)}.cell:nth-child(9n){border-right:0}.cell:nth-child(n+19):nth-child(-n+27),.cell:nth-child(n+46):nth-child(-n+54){border-bottom:2px solid var(--rule)}.cell:nth-child(n+73){border-bottom:0}.cell.peer{background:#eff1e9}.cell.same{background:var(--soft)}.cell.selected{background:var(--soft);box-shadow:inset 0 0 0 2px var(--accent);z-index:1}.cell.wrong{color:#c04945;background:#ffebe5!important}.cell.wrong::after{content:"!";position:absolute;bottom:2px;right:4px;font-size:9px;font-weight:bold}.cell.trace-place{background:#d7e9bf!important;color:#43662d}.cell.trace-back{background:#ffe3cd!important;color:#995a26}.notes-grid{position:absolute;inset:3px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);font-size:clamp(8px,1vw,12px);color:var(--muted);pointer-events:none}.notes-grid span{display:grid;place-items:center}.board-meta{display:flex;align-items:center;justify-content:space-between;font-size:9px;color:var(--muted);margin:15px 0 20px}.board-meta>span:first-child{display:flex;align-items:center;gap:5px}.board-meta i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#516a5a}.board-meta .entry-dot{background:var(--accent);margin-left:10px}#keypad{display:grid;grid-template-columns:repeat(9,1fr);gap:7px}.number-key{background:var(--paper);border:1px solid #d9e1d1;border-radius:7px;height:54px;font-size:25px;color:var(--accent)}.action-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0 0}.action-row button{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 5px;border:1px solid var(--line);background:transparent;border-radius:7px;color:#52665a;font-size:20px}.action-row button span{font-size:11px}.action-row button[aria-pressed=true]{background:var(--soft);border-color:var(--accent)}.action-row b{font-size:7px;letter-spacing:.5px;font-weight:500}.keyboard{text-align:center;color:#8b968b;font-size:9px;margin-top:18px}kbd{font:inherit;color:#596e5e}aside{display:flex;flex-direction:column;gap:19px}.panel{background:#fffefa99;border:1px solid var(--line);border-radius:12px;padding:24px}.panel h2{font-size:20px;font-weight:500;letter-spacing:-.5px;margin:0 0 22px}#levels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.level{background:transparent;border:1px solid var(--line);border-radius:7px;padding:11px 3px;color:#687a6b;font-size:11px}.level small{display:block;font-size:8px;color:#8c978b;margin-top:5px}.level.active{background:var(--accent);border-color:var(--accent);color:white}.level.active small{color:#fff9}#level-copy{font-size:11px;line-height:1.9;color:var(--muted);min-height:45px;margin:20px 0}.primary{background:var(--accent);border:0;border-radius:7px;color:white;display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px;padding:14px 16px;font-size:11px;font-weight:600}.primary span{font-size:18px;line-height:15px}.unique{font-size:9px;text-align:center;color:var(--muted);margin:15px 0 0}.note-card{background:var(--soft);border-color:transparent;position:relative;padding-top:64px}.note-icon{position:absolute;top:18px;left:24px;font-family:Georgia,serif;line-height:8px;color:var(--accent);font-size:15px;letter-spacing:2px}.note-card .eyebrow{font-size:8px;margin-bottom:11px}.note-card h2{font-size:18px;margin-bottom:10px}.note-card>p:not(.eyebrow){font-size:11px;line-height:1.9;color:var(--muted);margin:0}.mini-tag{display:block;margin-top:18px;font-size:9px;color:var(--accent)}.origin-card{padding:15px 24px}.origin-card>span{display:block;color:var(--accent);font-family:Georgia,serif;font-size:27px;margin-bottom:15px}.origin-card .eyebrow{font-size:7px;letter-spacing:1.4px}.origin-card h3{font-size:14px;font-weight:500;margin:0 0 10px}.origin-card>p:not(.eyebrow){font-size:10px;color:var(--muted);line-height:1.9}.origin-card a{color:var(--accent);font-size:9px;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:3px}footer{display:flex;justify-content:space-between;font-size:8px;letter-spacing:1px;color:#8a9689;border-top:1px solid var(--line);padding:26px 0 32px;margin-top:40px}footer i{font-style:normal;margin:0 8px}.lab-panel{margin-top:26px;border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:24px}.lab-heading{display:flex;justify-content:space-between;align-items:center}.lab-heading h2{font-size:18px;font-weight:500;margin:0}.lab-heading .eyebrow{margin-bottom:10px;font-size:8px}.lab-chip{color:var(--accent);font-size:8px;border:1px solid var(--line);border-radius:4px;padding:6px}.lab-copy{font-size:11px;line-height:1.8;color:var(--muted);margin:14px 0}.lab-controls{display:flex;gap:8px;align-items:center}.lab-controls button,.lab-controls select{font:inherit;font-size:10px;padding:10px 11px;border-radius:5px;border:1px solid var(--line);background:transparent;color:var(--ink)}.lab-controls #trace-play{background:var(--accent);color:white;border-color:var(--accent);min-width:105px}.lab-controls select{margin-left:auto;min-width:0}.trace-meter{height:3px;border-radius:2px;background:var(--line);margin-top:18px;overflow:hidden}#trace-bar{width:0;height:100%;background:var(--accent)}#trace-status{font-size:10px;color:var(--muted);line-height:1.8;min-height:32px;margin-top:13px}.pseudo{display:grid;grid-template-columns:20px 1fr;gap:7px;font-family:monospace;font-size:10px;color:#8c998d;border-top:1px solid var(--line);padding-top:16px}.pseudo b{font-weight:400;color:var(--accent)}#pause-cover{position:absolute;inset:0;border-radius:12px;background:var(--paper);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:3;text-align:center}#pause-cover>span{font-size:30px;color:var(--accent)}#pause-cover h2{font-family:Georgia,serif;font-size:27px;font-weight:400}#pause-cover p{font-size:12px;color:var(--muted)}#pause-cover .primary{width:190px;margin-top:15px}#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:8px;background:#263d31;color:white;font-size:12px;z-index:30;box-shadow:0 8px 30px #0002}#toast.error{background:#9a4138}dialog{max-width:470px;width:calc(100% - 32px);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:18px;padding:38px;box-shadow:0 20px 100px #15231d33}dialog::backdrop{background:#1a312b80;backdrop-filter:blur(7px)}dialog h2{font-family:Georgia,serif;font-size:30px;line-height:1.2;font-weight:400;letter-spacing:-.6px;margin:0 0 18px}dialog>p:not(.eyebrow),dialog li{font-size:12px;line-height:1.9;color:var(--muted)}dialog ol{padding-left:18px}dialog li{margin:10px 0}dialog .fine-print{font-size:10px!important;background:var(--bg);padding:12px;border-radius:6px}.close{position:absolute;right:13px;top:10px;background:transparent;border:0;font-size:25px;color:var(--muted)}.dialog-actions{display:flex;gap:12px;margin-top:25px}.dialog-actions .outline{white-space:nowrap}.win{text-align:center}.trophy{font-size:64px;color:var(--accent);height:96px;width:96px;border:1px solid var(--line);border-radius:50%;margin:0 auto 25px;line-height:87px;background:var(--soft)}.win .eyebrow{font-size:8px}.win-details{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;margin:25px 0}.win-details small{display:block;font-size:7px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}.win-details strong{font-weight:500;font-size:17px}#confetti{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}.piece{position:absolute;top:-20px;width:7px;height:12px;animation:fall 3s ease-in forwards}@keyframes fall{to{transform:translate(var(--drift),110vh) rotate(740deg)}}
+@media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr) 270px;gap:28px}h1{font-size:36px}.hero-number{font-size:62px}main{padding:0 26px}.panel{padding:22px}.cell{font-size:23px}.header-label{display:none}}
+@media(max-width:660px){header{height:78px;padding:0 18px}.brand{font-size:20px}.logo{font-size:30px}.outline{font-size:10px;padding:9px 11px}.outline span{margin-left:5px}main{padding:0 18px;max-width:530px}.hero{padding:29px 0 24px}.hero-number{display:none}h1{font-size:35px;letter-spacing:-1px}.hero-copy{font-size:11px;max-width:340px;margin-top:12px}.hero .eyebrow{font-size:8px}.layout{display:flex;flex-direction:column;gap:25px}.play-area,aside{width:100%}.board-top{font-size:10px;margin-bottom:9px}.chip{font-size:8px}.board-wrap{padding:7px;border-radius:9px}.cell{font-size:clamp(18px,5.5vw,27px)}.notes-grid{font-size:clamp(8px,2.3vw,12px);inset:2px}.board-meta{font-size:8px;margin:13px 0 17px}#keypad{gap:5px}.number-key{font-size:23px;height:46px}.action-row{gap:6px;margin-top:12px}.action-row button{gap:5px;padding:12px 2px;font-size:18px}.action-row button span{font-size:10px}.action-row b{font-size:6px}.keyboard{font-size:8px;line-height:1.8}.lab-panel{padding:20px;margin-top:22px}.lab-controls{gap:5px}.lab-controls button,.lab-controls select{font-size:9px;padding:9px 6px}.lab-controls #trace-play{min-width:90px}.lab-chip{font-size:7px}.lab-heading h2{font-size:17px}.panel{padding:24px}#levels{grid-template-columns:repeat(6,1fr);gap:5px}.level{font-size:10px;padding:12px 2px}.level small{font-size:7px}.panel h2{font-size:21px}.panel .eyebrow{font-size:8px}#level-copy{min-height:0;font-size:11px}.note-card{padding-top:64px}.note-card .note-icon{top:20px}.origin-card{padding:8px 24px}.note-card h2{font-size:20px}footer{font-size:7px;letter-spacing:0;gap:8px;margin-top:28px}footer i{margin:0 4px}dialog{padding:34px 25px}dialog h2{font-size:27px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#confetti{display:none}}
+</style>
 </head>
-<body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="site-header">
-    <a class="brand" href="./" aria-label="留白数独首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>留白<span class="brand-en">SUDOKU</span></span></a>
-    <span class="header-caption">A LITTLE SPACE FOR YOUR MIND</span>
-    <button class="quiet-button" id="help-button"><span aria-hidden="true">?</span> 玩法指南</button>
-  </header>
-  <main>
-    <section class="intro"><div><p class="eyebrow"><span></span> THE ART OF FOCUS</p><h1>在数字之间，<em>找回专注。</em></h1><p class="intro-copy">把纷扰留在外面。此刻，只有你和九宫格。</p></div><div class="edition"><span>09 × 09</span><small>无限可能 · 唯一答案</small></div></section>
-    <section class="game-layout" aria-label="数独游戏">
-      <div class="play-column">
-        <div class="game-status"><div class="difficulty-status"><span class="status-dot"></span><strong id="current-level">简单</strong><span class="tag" id="clue-tag">40 个线索</span></div><div class="timer-group"><span class="clock-icon" aria-hidden="true">◷</span><span id="timer" aria-label="游戏用时">00:00</span><button id="pause-button" class="icon-button" aria-label="暂停游戏" title="暂停游戏">Ⅱ</button></div></div>
-        <div class="board-shell"><div id="board" class="board" role="grid" aria-label="9乘9数独棋盘"></div><div class="pause-cover" id="pause-cover" hidden><span class="pause-symbol">Ⅱ</span><h2>给思绪，一点留白</h2><p>棋盘已隐藏，计时已暂停。</p><button class="primary-button" id="resume-button">继续游戏 <span>→</span></button></div></div>
-        <div class="board-caption"><span><i class="legend given-legend"></i>题目数字 <i class="legend filled-legend"></i>你的答案</span><span id="filled-count">已完成 0 / 41</span></div>
-        <div class="mobile-tools-hint">轻触空格，再选择下方数字</div>
-        <div class="number-pad" id="number-pad" aria-label="数字键盘"></div>
-        <p class="keyboard-tip"><kbd>1–9</kbd> 填数 <span>·</span> <kbd>N</kbd> 笔记 <span>·</span> <kbd>⌫</kbd> 擦除 <span>·</span> 方向键移动</p>
-      </div>
-      <aside class="sidebar">
-        <section class="panel difficulty-panel"><p class="section-label">YOUR NEXT CHALLENGE</p><h2>选择你的节奏</h2><div id="difficulty-options" class="difficulty-options" role="group" aria-label="选择难度"></div><div class="level-description"><span id="level-symbol">✦</span><div><h3 id="level-label">轻松入门</h3><p id="level-description"></p></div></div><button id="new-game" class="primary-button">开启新的一局 <span aria-hidden="true">↗</span></button><p class="unique-note"><span aria-hidden="true">◇</span> 每一道题，都有唯一解</p></section>
-        <section class="panel tools-panel"><div class="panel-heading"><h2>解题工具</h2><span>MAKE IT YOURS</span></div><div class="tools"><button id="undo-button" class="tool-button"><span class="tool-icon" aria-hidden="true">↶</span><span>撤销</span></button><button id="erase-button" class="tool-button"><span class="tool-icon" aria-hidden="true">⌫</span><span>擦除</span></button><button id="notes-button" class="tool-button" aria-pressed="false"><span class="tool-icon" aria-hidden="true">✎</span><span>笔记 <b id="note-status">关</b></span></button></div><div class="note-explainer"><span class="tiny-grid" aria-hidden="true">¹ ²<br>⁴ ⁶</span><p>不确定的答案，先记下来。<br>开启笔记，在空格中标记候选数。</p></div><button class="check-button" id="check-button"><span aria-hidden="true">◎</span> 检查当前进度 <span>→</span></button></section>
-        <div class="mindful-note"><span aria-hidden="true">“</span><p>不必急着填满。<br>答案，藏在每一次耐心的观察里。</p><small>TAKE YOUR TIME. FIND YOUR FLOW.</small></div>
-      </aside>
-    </section>
-    <footer><span>留白 SUDOKU <i>／</i> 为专注而设计</span><span>六种难度，一份心流。</span></footer>
-  </main>
-  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <dialog id="confirm-dialog" class="modal"><button class="modal-close" data-close aria-label="关闭">×</button><p class="section-label">A FRESH START</p><h2 id="confirm-title">开启新的挑战？</h2><p id="confirm-copy">当前这一局的进度将被替换。</p><div class="modal-actions"><button class="secondary-button" data-close>再想想</button><button class="primary-button" id="confirm-action">开启新局 →</button></div></dialog>
-  <dialog id="help-dialog" class="modal help-modal"><button class="modal-close" data-close aria-label="关闭">×</button><p class="section-label">HOW TO PLAY</p><h2>九宫格里的小宇宙</h2><p>将 1–9 填入空格，让每一行、每一列、每一个 3×3 宫中的数字都不重复。</p><div class="help-item"><b>01</b><p><strong>选格，再填数</strong>点击空格，使用数字键盘或键盘 1–9 输入。方向键可移动选格。</p></div><div class="help-item"><b>02</b><p><strong>给推理留个记号</strong>点击「笔记」或按 N，输入候选数。再次输入同一数字即可取消标记。关闭笔记后填入正式答案。</p></div><div class="help-item"><b>03</b><p><strong>每一步，都有回应</strong>错填会以红色和文字即时提醒；擦除或改正即可继续。填满且全部正确后，即可通关。</p></div><p class="help-footnote">难度按线索稀疏程度分档：40 / 32 / 25 / 22 / 19 / 17 个。线索更少通常更具挑战，实际推理难度因题而异。所有题目均由唯一解的 17 线索种子经过合法变换生成。</p><button class="primary-button" data-close>准备好了 →</button></dialog>
-  <dialog id="win-dialog" class="modal win-modal"><button class="modal-close" data-close aria-label="关闭">×</button><div class="win-emblem" aria-hidden="true">✧</div><p class="section-label">BEAUTIFULLY SOLVED</p><h2>每一格，皆是高光。</h2><p>你让所有数字找到了归属。<br>这份专注，值得一场庆祝。</p><div class="win-stats"><div><small>完成难度</small><strong id="win-level"></strong></div><div><small>专注时长</small><strong id="win-time"></strong></div><div><small>错填次数</small><strong id="win-mistakes"></strong></div></div><button class="primary-button" id="win-next">再赴一场挑战 <span>↗</span></button></dialog>
-  <div id="confetti" aria-hidden="true"></div>
-</body>
-</html>
+<body class="simple">
+<header><a class="brand" href="./"><span class="logo" aria-hidden="true">▦</span> sudoku<span class="brand-light">atelier</span></a><span class="header-label">A LITTLE SPACE TO THINK</span><button id="help" class="outline">How to play <span>→</span></button></header>
+<main>
+<section class="hero"><div><p class="eyebrow"><i></i> YOUR DAILY MOMENT OF CLARITY</p><h1>A quiet mind.<br><em>A beautiful puzzle.</em></h1><p class="hero-copy">Leave the noise behind. Make space for a small, satisfying moment of focus.</p></div><div class="hero-number">09<span>ROWS. COLUMNS. POSSIBILITIES.</span></div></section>
+<div class="layout">
+<section class="play-area" aria-label="Sudoku game">
+<div class="board-top"><div><span class="live-dot"></span><strong id="level-name"></strong><span class="chip" id="clues"></span></div><div class="timer"><span aria-hidden="true">◷</span><span id="timer">00:00</span><button id="pause" aria-label="Pause game" class="pause-button">||</button></div></div>
+<div class="board-wrap"><div id="board" role="group" aria-label="9 by 9 Sudoku board"></div><div id="pause-cover" hidden><span>||</span><h2>A moment to breathe.</h2><p>Your puzzle will be right here.</p><button id="resume" class="primary">Continue playing →</button></div></div>
+<div class="board-meta"><span><i class="given-dot"></i> Given <i class="entry-dot"></i> Your answer</span><span id="progress"></span></div>
+<div id="keypad" aria-label="Number pad"></div>
+<div class="action-row"><button id="undo">↶ <span>Undo</span></button><button id="erase">⌫ <span>Erase</span></button><button id="notes" aria-pressed="false">✎ <span>Notes</span><b id="notes-label">OFF</b></button><button id="check">◎ <span>Check</span></button></div>
+<p class="keyboard"><kbd>1–9</kbd> enter · <kbd>N</kbd> notes · <kbd>⌫</kbd> erase · arrows to move</p>
+
+</section>
+<aside>
+<section class="panel"><p class="eyebrow">CHOOSE YOUR CHALLENGE</p><h2>Find your own pace.</h2><div id="levels" role="group" aria-label="Difficulty"></div><p id="level-copy"></p><button id="new" class="primary">A fresh puzzle <span>→</span></button><p class="unique">◇ &nbsp; Every puzzle has exactly one solution</p></section>
+<section class="panel note-card"><div class="note-icon">¹ ² ³<br>⁴ ⁵ ⁶<br>⁷ ⁸ ⁹</div><p class="eyebrow">MAKE ROOM FOR IDEAS</p><h2>Not sure? Make a note.</h2><p>Turn on Notes to pencil in possible numbers. Tap a number again to remove it.</p><span class="mini-tag">Your thinking, kept in place.</span></section>
+<section class="origin-card"><span>✧</span><p class="eyebrow">FROM NOTEBOOK TO BROWSER</p><h3>Simple by design. A joy to play.</h3><p>The original Python GUI, reimagined as a friendly game that runs in your browser.</p><p class="eyebrow">PYTHON NOTEBOOK · BROWSER EDITION</p></section>
+</aside>
+</div>
+<footer><span>SUDOKU ATELIER <i>/</i> MADE FOR YOUR MOMENT OF FOCUS.</span><span>One grid. A clearer mind.</span></footer>
+</main>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="help-modal"><button class="close" data-close aria-label="Close">×</button><p class="eyebrow">THE BEAUTY IS IN THE LOGIC</p><h2>Nine numbers. Endless discovery.</h2><p>Fill every row, column and 3×3 box with the numbers 1–9, without repeating a number.</p><ol><li>Select an empty cell, then use the number pad or your keyboard.</li><li>Turn on Notes (N) to record candidates. Turn it off to enter an answer.</li><li>Incorrect entries turn red with a warning. You can erase, undo and try again.</li></ol><p class="fine-print">Difficulty follows clue counts: 40 / 32 / 25 / 22 / 19 / 17. Fewer clues do not always mean a harder logical puzzle. Puzzles use symmetry transformations of one verified unique 17-clue seed.</p><button class="primary" data-close>Let's begin →</button></dialog>
+<dialog id="confirm-modal"><button class="close" data-close aria-label="Close">×</button><p class="eyebrow">A NEW BEGINNING</p><h2>Start a fresh puzzle?</h2><p>Your current progress will be replaced.</p><div class="dialog-actions"><button class="outline" data-close>Keep playing</button><button id="confirm-new" class="primary">Start fresh →</button></div></dialog>
+<dialog id="win-modal" class="win"><button class="close" data-close aria-label="Close">×</button><div class="trophy">✧</div><p class="eyebrow">BEAUTIFULLY DONE</p><h2>You found your flow.</h2><p>Every number in its place.<br>A little patience. A brilliant finish.</p><div class="win-details"><div><small>DIFFICULTY</small><strong id="win-level"></strong></div><div><small>YOUR TIME</small><strong id="win-time"></strong></div><div><small>MISTAKES</small><strong id="win-errors"></strong></div></div><button id="win-next" class="primary">One more moment of clarity <span>→</span></button></dialog>
+<div id="confetti" aria-hidden="true"></div>
+<script id="sudoku-core">
+const LEVELS = [
+  {name:'Easy',zh:'简单',clues:40,copy:'A gentle beginning. Find your rhythm, one number at a time.'},
+  {name:'Medium',zh:'中等',clues:32,copy:'A little more space. A little more room for discovery.'},
+  {name:'Hard',zh:'困难',clues:25,copy:'Just 25 clues. Slow down and look for the connections.'},
+  {name:'Expert',zh:'专家',clues:22,copy:'22 clues. Bring your patience and your sharpest reasoning.'},
+  {name:'Hell',zh:'地狱',clues:19,copy:'Only 19 clues. An invitation to think a little deeper.'},
+  {name:'Dream',zh:'梦寐',clues:17,copy:'17 clues: the minimum for a uniquely solvable standard Sudoku.'}
+];
+const SEED = '000000010400000000020000000000050407008000300001090000300400200050100000000806000';
+function solve(input, limit = 2, trace = false) {
+  const board = input.slice(), rows = Array(9).fill(0), cols = Array(9).fill(0), boxes = Array(9).fill(0), solutions = [], events = [];
+  if (board.length !== 81 || board.some(v => !Number.isInteger(v) || v < 0 || v > 9)) return {solutions, events};
+  for (let i=0; i<81; i++) {
+    if (!board[i]) continue;
+    const r=Math.floor(i/9),c=i%9,b=Math.floor(r/3)*3+Math.floor(c/3),bit=1<<board[i];
+    if ((rows[r]|cols[c]|boxes[b])&bit) return {solutions, events};
+    rows[r]|=bit; cols[c]|=bit; boxes[b]|=bit;
+  }
+  function search() {
+    let index=-1,mask=0,size=10;
+    for(let i=0;i<81;i++) {
+      if(board[i]) continue;
+      const r=Math.floor(i/9),c=i%9,b=Math.floor(r/3)*3+Math.floor(c/3),m=0x3FE&~(rows[r]|cols[c]|boxes[b]);
+      let count=0; for(let bits=m;bits;bits&=bits-1) count++;
+      if(!count) return;
+      if(count<size){index=i;mask=m;size=count;} if(count===1) break;
+    }
+    if(index===-1){solutions.push(board.slice());return;}
+    const r=Math.floor(index/9),c=index%9,b=Math.floor(r/3)*3+Math.floor(c/3);
+    while(mask) {
+      const bit=mask&-mask;mask^=bit;const value=Math.log2(bit);
+      board[index]=value;rows[r]|=bit;cols[c]|=bit;boxes[b]|=bit;
+      if(trace) events.push({index,value,kind:'place'});
+      search();
+      rows[r]^=bit;cols[c]^=bit;boxes[b]^=bit;board[index]=0;
+      if(solutions.length>=limit) return;
+      if(trace) events.push({index,value:0,kind:'backtrack'});
+    }
+  }
+  search();return {solutions,events};
+}
+function shuffle(input) {const a=input.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const seedSolution=solve([...SEED].map(Number),1).solutions[0];
+function generate(level=0) {
+  if(!Number.isInteger(level)||!LEVELS[level]) throw new RangeError('Invalid difficulty');
+  const order=()=>shuffle([0,1,2]).flatMap(b=>shuffle([0,1,2]).map(n=>b*3+n));
+  const rows=order(),cols=order(),digits=[0,...shuffle([1,2,3,4,5,6,7,8,9])],transpose=Math.random()<.5;
+  const puzzle=[],solution=[];
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++) {
+    const i=transpose?cols[c]*9+rows[r]:rows[r]*9+cols[c];
+    puzzle.push(digits[Number(SEED[i])]);solution.push(digits[seedSolution[i]]);
+  }
+  const holes=shuffle(puzzle.map((v,i)=>v?-1:i).filter(i=>i>=0));
+  for(let n=17;n<LEVELS[level].clues;n++){const i=holes.pop();puzzle[i]=solution[i];}
+  return {puzzle,solution,level};
+}
+window.SudokuCore={solve,generate,LEVELS};
+
+</script>
+<script id="sudoku-app">
+(() => {
+  'use strict';
+  const MODE='simple', $=id=>document.getElementById(id), storageKey='sudoku-atelier-'+MODE+'-v1';
+  let game, selected=-1, choice=0, noteMode=false, paused=false, run=null, traceTimer=null, toastTimer, confettiTimer;
+  let lastTick=performance.now();
+  const cells=[], keys=[];
+  const copy=value=>JSON.parse(JSON.stringify(value));
+  const time=seconds=>{const n=Math.floor(seconds);return (n>=3600?Math.floor(n/3600)+':':'')+String(Math.floor(n/60)%60).padStart(2,'0')+':'+String(n%60).padStart(2,'0');};
+  function toast(message,error=false){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').classList.toggle('error',error);$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,4000);}
+  function save(){try{localStorage.setItem(storageKey,JSON.stringify(run?{...game,values:run.snapshot.values,notes:run.snapshot.notes}:game));}catch{/* Private/iframe storage may be unavailable; the game still works. */}}
+  function restore(){
+    try{
+      const g=JSON.parse(localStorage.getItem(storageKey));
+      if(!g||!Number.isInteger(g.level)||!LEVELS[g.level]||![g.puzzle,g.solution,g.values,g.notes].every(a=>Array.isArray(a)&&a.length===81))return false;
+      if([...g.puzzle,...g.solution,...g.values].some(v=>!Number.isInteger(v)||v<0||v>9)||g.solution.includes(0))return false;
+      if(g.puzzle.filter(Boolean).length!==LEVELS[g.level].clues||g.puzzle.some((n,i)=>n&&(n!==g.solution[i]||g.values[i]!==n)))return false;
+      if(g.notes.some(a=>!Array.isArray(a)||a.some(n=>!Number.isInteger(n)||n<1||n>9)))return false;
+      if(!Number.isFinite(g.elapsed)||g.elapsed<0||!Number.isInteger(g.errors)||g.errors<0||solve(g.solution,1).solutions.length!==1)return false;
+      g.history=[];g.won=g.values.every((v,i)=>v===g.solution[i]);game=g;choice=g.level;return true;
+    }catch{return false;}
+  }
+  function start(level){
+    if(run)stopTrace();
+    game={...generate(level),values:[],notes:Array.from({length:81},()=>[]),history:[],errors:0,elapsed:0,won:false};
+    game.values=game.puzzle.slice();choice=level;selected=game.puzzle.findIndex(v=>!v);noteMode=false;paused=false;lastTick=performance.now();
+    document.querySelectorAll('dialog[open]').forEach(d=>d.close());clearTimeout(confettiTimer);$('confetti').replaceChildren();save();render();
+  }
+  function peers(a,b){return Math.floor(a/9)===Math.floor(b/9)||a%9===b%9||(Math.floor(a/27)===Math.floor(b/27)&&Math.floor(a%9/3)===Math.floor(b%9/3));}
+  function snapshot(){game.history.push({values:game.values.slice(),notes:copy(game.notes)});if(game.history.length>150)game.history.shift();}
+  function editable(){
+    if(paused||run||game.won)return false;
+    if(selected<0||game.puzzle[selected]){toast('Select an empty cell to add your answer.');return false;}
+    return true;
+  }
+  function enter(n){
+    if(!editable())return;
+    if(noteMode){
+      if(game.values[selected]){toast('Erase the answer first to add notes in this cell.');return;}
+      snapshot();const notes=game.notes[selected];game.notes[selected]=notes.includes(n)?notes.filter(v=>v!==n):[...notes,n].sort();
+    }else{
+      if(game.values[selected]===n)return;
+      snapshot();game.values[selected]=n;game.notes[selected]=[];
+      if(n!==game.solution[selected]){game.errors++;toast(`Not quite. Recheck row ${Math.floor(selected/9)+1}, column ${selected%9+1}.`,true);}
+      else for(let i=0;i<81;i++)if(peers(i,selected))game.notes[i]=game.notes[i].filter(v=>v!==n);
+    }
+    save();render();
+    if(game.values.every((v,i)=>v===game.solution[i]))win();
+  }
+  function erase(){if(!editable()||(!game.values[selected]&&!game.notes[selected].length))return;snapshot();game.values[selected]=0;game.notes[selected]=[];save();render();}
+  function undo(){if(paused||run||game.won||!game.history.length)return;const previous=game.history.pop();game.values=previous.values;game.notes=previous.notes;save();render();}
+  function toggleNotes(){if(paused||run||game.won)return;noteMode=!noteMode;render();toast(noteMode?'Notes on. Tap a number to add or remove a candidate.':'Notes off. You are entering answers.');}
+  function renderChoice(){
+    document.querySelectorAll('.level').forEach((button,i)=>{button.classList.toggle('active',i===choice);button.setAttribute('aria-pressed',String(i===choice));});
+    $('level-copy').textContent=LEVELS[choice].copy;
+  }
+  function render(){
+    const active=game.values[selected]||0,locked=paused||game.won||!!run;
+    cells.forEach((cell,i)=>{
+      const value=game.values[i],wrong=value&&value!==game.solution[i]&&!run;
+      cell.classList.toggle('given',!!game.puzzle[i]);cell.classList.toggle('peer',selected>=0&&peers(i,selected));cell.classList.toggle('same',!!active&&value===active);
+      cell.classList.toggle('selected',i===selected);cell.classList.toggle('wrong',!!wrong);
+      cell.classList.toggle('trace-place',!!run&&run.last?.index===i&&run.last.kind==='place');cell.classList.toggle('trace-back',!!run&&run.last?.index===i&&run.last.kind==='backtrack');
+      cell.setAttribute('aria-invalid',String(!!wrong));cell.setAttribute('aria-pressed',String(i===selected));cell.tabIndex=i===selected?0:-1;
+      cell.setAttribute('aria-label',`Row ${Math.floor(i/9)+1}, column ${i%9+1}: ${value?value+(game.puzzle[i]?', given':wrong?', incorrect':', entered'):'empty'+(game.notes[i].length?', notes '+game.notes[i].join(', '):'')}`);
+      cell.replaceChildren();
+      if(value)cell.textContent=value;
+      else if(game.notes[i].length){const notes=document.createElement('span');notes.className='notes-grid';notes.setAttribute('aria-hidden','true');for(let n=1;n<=9;n++){const s=document.createElement('span');s.textContent=game.notes[i].includes(n)?n:'';notes.append(s);}cell.append(notes);}
+    });
+    $('level-name').textContent=LEVELS[game.level].name+' · '+LEVELS[game.level].zh;
+    $('clues').textContent=LEVELS[game.level].clues+' clues';$('timer').textContent=time(game.elapsed);
+    const completed=game.values.filter((v,i)=>!game.puzzle[i]&&v===game.solution[i]).length;
+    $('progress').textContent=run?'Algorithm preview':`${completed} of ${81-LEVELS[game.level].clues} completed`;
+    $('notes').setAttribute('aria-pressed',String(noteMode));$('notes-label').textContent=noteMode?'ON':'OFF';
+    ['erase','notes','check'].forEach(id=>$(id).disabled=locked);$('undo').disabled=locked||!game.history.length;
+    keys.forEach(k=>k.disabled=locked);$('pause').disabled=game.won||!!run;$('pause').textContent=paused?'▶':'||';$('pause').setAttribute('aria-label',paused?'Resume game':'Pause game');
+    $('pause-cover').hidden=!paused;$('board').inert=paused;$('board').setAttribute('aria-hidden',String(paused));
+    renderChoice();if(MODE==='backtracking')renderTrace();
+  }
+  function pause(value){if(game.won||run)return;paused=value;lastTick=performance.now();render();save();if(paused)$('resume').focus();else cells[selected].focus();}
+  function newGame(){
+    if(!game.won&&(run||game.values.some((v,i)=>!game.puzzle[i]&&(v||game.notes[i].length))))$('confirm-modal').showModal();else start(choice);
+  }
+  function win(){
+    game.won=true;save();render();$('win-level').textContent=LEVELS[game.level].name;$('win-time').textContent=time(game.elapsed);$('win-errors').textContent=game.errors;$('win-modal').showModal();
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+    for(let i=0;i<65;i++){const p=document.createElement('i');p.className='piece';p.style.left=Math.random()*100+'%';p.style.background=['#80a481','#edb775','#779ebd','#c3a4b1'][i%4];p.style.setProperty('--drift',(Math.random()-.5)*300+'px');p.style.animationDelay=Math.random()*.7+'s';$('confetti').append(p);}
+    confettiTimer=setTimeout(()=>$('confetti').replaceChildren(),4200);
+  }
+  function prepareTrace(){
+    if(run)return true;if(paused||game.won)return false;
+    if(game.values.some((v,i)=>v&&v!==game.solution[i])){toast('Correct or erase the red entries before exploring the solver.',true);return false;}
+    const result=solve(game.values,1,true);
+    if(!result.solutions.length){toast('This board has no solution.',true);return false;}
+    run={snapshot:{values:game.values.slice(),notes:copy(game.notes)},events:result.events,cursor:0,last:null,playing:false,placements:0,backs:0};
+    noteMode=false;render();return true;
+  }
+  function stepTrace(batch=1){
+    if(!prepareTrace())return;
+    for(let n=0;n<batch&&run.cursor<run.events.length;n++){
+      const event=run.events[run.cursor++];game.values[event.index]=event.value;run.last=event;
+      if(event.kind==='place')run.placements++;else run.backs++;
+    }
+    if(run.cursor===run.events.length){clearInterval(traceTimer);traceTimer=null;run.playing=false;}
+    render();
+  }
+  function playTrace(){
+    if(!prepareTrace())return;
+    if(run.playing){clearInterval(traceTimer);traceTimer=null;run.playing=false;renderTrace();return;}
+    if(run.cursor===run.events.length)return;
+    run.playing=true;traceTimer=setInterval(()=>stepTrace(Number($('trace-speed').value)),50);renderTrace();
+  }
+  function stopTrace(){
+    clearInterval(traceTimer);traceTimer=null;
+    if(run){game.values=run.snapshot.values;game.notes=run.snapshot.notes;run=null;save();render();}
+  }
+  function renderTrace(){
+    const finished=run&&run.cursor===run.events.length;
+    $('trace-play').textContent=run?.playing?'Pause':finished?'Solved':'Watch it solve';$('trace-play').disabled=paused||game.won||!!finished;
+    $('trace-step').disabled=paused||game.won||!!finished||!!run?.playing;$('trace-reset').disabled=!run;
+    $('trace-bar').style.width=run?run.cursor/Math.max(1,run.events.length)*100+'%':'0%';
+    $('trace-status').textContent=!run?'Ready when you are. Step through the choices, or watch them unfold.':
+      (finished?'Solution found by the algorithm. Restore to continue your own game.':run.last?`${run.last.kind==='place'?'Try '+run.last.value:'Backtrack'} at row ${Math.floor(run.last.index/9)+1}, column ${run.last.index%9+1}.`:'Ready to make the first choice.')+` ${run.placements} placements · ${run.backs} backtracks · ${run.cursor}/${run.events.length} steps.`;
+  }
+  for(let i=0;i<81;i++){const cell=document.createElement('button');cell.type='button';cell.className='cell';cell.addEventListener('click',()=>{if(paused||run||game.won)return;selected=i;render();});cells.push(cell);$('board').append(cell);}
+  LEVELS.forEach((level,i)=>{const button=document.createElement('button');button.className='level';button.title=level.zh+' · '+level.clues+' clues';button.append(document.createTextNode(level.name));const small=document.createElement('small');small.textContent=level.clues+' clues';button.append(small);button.addEventListener('click',()=>{choice=i;renderChoice();});$('levels').append(button);});
+  for(let n=1;n<=9;n++){const key=document.createElement('button');key.className='number-key';key.textContent=n;key.setAttribute('aria-label','Enter '+n);key.addEventListener('click',()=>enter(n));$('keypad').append(key);keys.push(key);}
+  $('notes').addEventListener('click',toggleNotes);$('erase').addEventListener('click',erase);$('undo').addEventListener('click',undo);
+  $('pause').addEventListener('click',()=>pause(!paused));$('resume').addEventListener('click',()=>pause(false));
+  $('new').addEventListener('click',newGame);$('confirm-new').addEventListener('click',()=>start(choice));$('win-next').addEventListener('click',()=>start(choice));
+  $('help').addEventListener('click',()=>$('help-modal').showModal());document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+  $('check').addEventListener('click',()=>{const bad=game.values.findIndex((v,i)=>v&&v!==game.solution[i]);if(bad>=0){selected=bad;render();cells[bad].focus();toast('An answer needs another look. The first one is selected.',true);}else toast('Everything entered so far is correct. Keep going!');});
+  document.addEventListener('keydown',e=>{
+    if(document.querySelector('dialog[open]')||paused||run||game.won||e.altKey)return;
+    if(e.ctrlKey||e.metaKey){if(e.key.toLowerCase()==='z'){e.preventDefault();undo();}return;}
+    if(/^[1-9]$/.test(e.key)){e.preventDefault();enter(Number(e.key));}
+    else if(e.key.toLowerCase()==='n'){e.preventDefault();toggleNotes();}
+    else if(['Backspace','Delete','0'].includes(e.key)){e.preventDefault();erase();}
+    else if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){
+      e.preventDefault();const r=Math.floor(selected/9),c=selected%9;
+      selected=selected<0?0:e.key==='ArrowLeft'?r*9+Math.max(0,c-1):e.key==='ArrowRight'?r*9+Math.min(8,c+1):e.key==='ArrowUp'?Math.max(0,r-1)*9+c:Math.min(8,r+1)*9+c;
+      render();cells[selected].focus();
+    }
+  });
+  if(MODE==='backtracking'){
+    $('trace-play').addEventListener('click',playTrace);$('trace-step').addEventListener('click',()=>stepTrace());$('trace-reset').addEventListener('click',stopTrace);
+  }
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)return;
+    if(run){clearInterval(traceTimer);traceTimer=null;run.playing=false;renderTrace();}else pause(true);
+  });
+  window.addEventListener('pagehide',save);
+  if(!restore())start(0);else{selected=game.puzzle.findIndex(v=>!v);render();}
+  setInterval(()=>{const now=performance.now(),delta=(now-lastTick)/1000;lastTick=now;if(!paused&&!game.won&&!run&&!document.hidden&&!document.querySelector('dialog[open]')){game.elapsed+=delta;$('timer').textContent=time(game.elapsed);save();}},1000);
+})();
+
+</script>
+</body></html>
